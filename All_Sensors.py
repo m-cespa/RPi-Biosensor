@@ -46,7 +46,7 @@ out_file.write(title + '\n')
 
 start = time.time()
 while True:
-# evaluating elapsed time at loop start effectively shifts timings by ~2s
+# evaluating elapsed time at loop start effectively shifts timings by ~3s
 # this sets the time-scale at regular integer stesps
     current = time.time()
     elapsed = current - start
@@ -71,7 +71,9 @@ while True:
     line = f'{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages1))},{",".join(map(str,voltages2))}'
     end_loop = time.time()
     diff = end_loop - start_loop
-    dt = max(np.ceil(diff),diff) - diff
+# optional extra pause time (dt is integer by design with no pause time set)
+# pause = 10
+    dt = max(np.ceil(diff),diff) - diff # + pause
     out_file.write(line + '\n')
     time.sleep(dt)
 out_file.close()
