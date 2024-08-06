@@ -13,7 +13,7 @@ import numpy as np
 from tqdm import tqdm
 
 # MULTIPLEXER INITIALISATION
-i2c = busio.I2C(board.SCl, board.SDA)
+i2c = busio.I2C(board.SCL, board.SDA)
 mux = adafruit_tca9548a.PCA9546A(i2c)
 
 # BME280 INITIALISATION
@@ -25,8 +25,8 @@ out_temp_sensors = DS18B20.get_all_sensors()
 
 # ADS1115 INITIALISATION
 # adcs are on the same i2c bus as the mux hence same i2c argument is passed
-adc_1 = ADS.ADS1115(address=0x48, i2c)
-adc_2 = ADS.ADS1115(address=0x49, i2c)
+adc_1 = ADS.ADS1115(address=0x48, i2c=i2c)
+adc_2 = ADS.ADS1115(address=0x49, i2c=i2c)
 
 channels1 = [AnalogIn(adc_1,ADS.P0),AnalogIn(adc_1,ADS.P1),
 AnalogIn(adc_1,ADS.P2),AnalogIn(adc_1,ADS.P3)]
