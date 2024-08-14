@@ -2,22 +2,23 @@ import RPi.GPIO as IO  # Import the RPi.GPIO module as IO for GPIO pin control
 import time
 
 # Setup GPIO
-IO.setmode(IO.BOARD)  # Set the GPIO mode to BOARD numbering
-LED_Pin = 35  # Define the GPIO pin number for the LED
+# for BOARD mode use actual pin number (1-40)
+# for BCM mode use GPIO pin number
+
+IO.setmode(IO.BOARD)             # Set mode to BOARD numbering
+LED_Pin = 35                     # Define the GPIO pin number for the LED
 
 # Setup LED pin
-IO.setup(LED_Pin, IO.OUT)  # Set the LED_Pin as an output pin
-p = IO.PWM(LED_Pin, 5000)  # Initialize PWM on LED_Pin with a frequency of 5000 Hz
-p.start(0)  # Start PWM with a duty cycle of 0%
+IO.setup(LED_Pin, IO.OUT)        # Set the LED_Pin as an output pin
 
 try:
     while True:
-        p.ChangeDutyCycle(100)  # Set the duty cycle to 100% to turn the LED on
-        time.sleep(10)  # Keep the LED on for 10 seconds
-        p.ChangeDutyCycle(0)  # Set the duty cycle to 0% to turn the LED off
-        time.sleep(20)  # Keep the LED off for 20 seconds
-
+        IO.output(LED_Pin, 1)
+        time.sleep(10)           # Keep the LED on for 10 seconds
+        IO.output(LED_Pin, 0)
+        time.sleep(10)           # Keep the LED off for 10 seconds
+        
 except KeyboardInterrupt:
-    p.stop()  # Stop the PWM signal
-    IO.cleanup()  # Clean up the GPIO settings
+    IO.output(LED_Pin, 0)        # turn the LED off
+    IO.cleanup()                 # Clean up the GPIO settings
     pass
