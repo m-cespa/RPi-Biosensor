@@ -1,5 +1,6 @@
 # Method: (for RPI Model 3B)
 
+(for circuit information refer to schematic /docs/SensorsSchematic.png)
 (python packages were all installed to a virtual environment, see [1](https://learn.adafruit.com/python-virtual-environment-usage-on-raspberry-pi/overview) for documentation)
 
 **PCA9546** (4 Channel Multiplexer):\
