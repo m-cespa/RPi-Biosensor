@@ -40,4 +40,4 @@ To yield a proxy measurement of solution turbidity, a pair of IR emitter and IR 
 
 
 **PWM STIRRER**:\
-Cooling fans with magnets were used to drive magnetic stirrer beads in each reactor beaker. The `PWM_Stirrer.py` script was run in the background to `ALL_Sensors.py` to keep the stirrers rotating at a prescribed fixed velocity modulated by using Pulse Wave Modulation (PWM) through a GPIO pin. The script uses the `RPi.GPIO` package which should be pre-installed on updated versions of Raspbian - to check this refer to [17](https://sourceforge.net/p/raspberry-gpio-python/wiki/install/).
+Cooling fans with magnets were used to drive magnetic stirrer beads in each reactor beaker. The `PWM_Stirrer.py` script was run in the background to `ALL_Sensors.py` to keep the stirrers rotating at a prescribed fixed velocity modulated by using Pulse Wave Modulation (PWM) through a GPIO pin. The script uses the `RPi.GPIO` package which should be pre-installed on updated versions of Raspbian - to check this refer to [22](https://sourceforge.net/p/raspberry-gpio-python/wiki/install/).
