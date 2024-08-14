@@ -1,6 +1,6 @@
 # Method: (for RPI Model 3B)
 
-(for circuit information refer to schematic diagram [here](./docs/circuit_schematic.png))
+(for circuit information refer to schematic diagram [here](./docs/circuit_schematic.png))\
 (python packages were all installed to a virtual environment, see [1](https://learn.adafruit.com/python-virtual-environment-usage-on-raspberry-pi/overview) for documentation)
 
 **PCA9546** (4 Channel Multiplexer):\
@@ -25,7 +25,7 @@ The following lines were passed into terminal (order specific) to install the `a
 4. `pip3 install adafruit-circuitpython-ads1x15`\
 
 Installation of the `ads7830` library after the above steps proved simpler now that the Adafruit_Blinka library was present. The following line was passed into terminal:
-`pip3 install adafruit-circuitpython-ads7830` [14](https://learn.adafruit.com/adafruit-ads7830-8-channel-8-bit-adc/circuitpython-and-python)\
+`pip3 install adafruit-circuitpython-ads7830` [14](https://learn.adafruit.com/adafruit-ads7830-8-channel-8-bit-adc/circuitpython-and-python)
 
 {NOTE: the `board` package must not be installed explicitly, it is installed via the `raspi.blinka` package. Concurrent explicit installation of the package can cause package failure. Further documentation on installing the `adafruit` and `blinka` packages necessary for the ADS1115 can be found here [15](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi).}
 
