@@ -19,9 +19,13 @@ pip3 install --upgrade adafruit-python-shell
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
 sudo -E env PATH=$PATH python3 raspi-blinka.py
 ```
-system will now ask to reboot, after reboot:
+system will now ask to reboot, after reboot and activation of venv:
 ```
 pip3 install adafruit-circuitpython-ads1x15 adafruit-circuitpython-ads7830 adafruit-circuitpython-tca9548a adafruit-circuitpython-bme280
+```
+if `board` module is causing issues, try:
+```
+python3 -m pip install --upgrade --force-reinstall adafruit-blinka
 ```
 
 # Method: (for RPI Model 3B+)
