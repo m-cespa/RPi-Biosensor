@@ -17,9 +17,5 @@ SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
 sudo apt update
 sudo apt full-upgrade
 ```
-3. If the RPi version is older than version 8, the `sources.list` file may be out of date in which case follow:\
-`sudo nano /etc/apt/sources.list`\
-this will open a text file, edit the first line containing the hyperlink to the raspbian os source to:\
-`deb http://raspbian.raspberrypi.org/raspbian/ bullseye main contrib non-free rpi`
 
 Alternative: install a fresh version of raspbian onto a blank ssd through the RPi imager found [here](https://www.raspberrypi.com/software/)
