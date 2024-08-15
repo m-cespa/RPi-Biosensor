@@ -86,8 +86,7 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             voltages_1 = [ch.voltage for ch in channels_1]
             voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
             
-            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},
-    {",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
             end_loop = time.time()
         # turn off IR LEDs
             IO.output(LED_Pin, 0)
