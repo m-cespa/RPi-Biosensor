@@ -7,7 +7,7 @@ python3 raspi-blinka.py
 pip3 install adafruit-circuitpython-ads1x15, adafruit-circuitpython-ads7830
 ```
 
-# Method: (for RPI Model 3B)
+# Method: (for RPI Model 3B+)
 
 (for circuit information refer to schematic diagram [here](./docs/labelled_schematic.png))\
 (python packages were all installed to a virtual environment, see [1](https://learn.adafruit.com/python-virtual-environment-usage-on-raspberry-pi/overview) for documentation)
