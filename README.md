@@ -4,6 +4,7 @@ activate your virtual environment:
 ```
 source venv/bin/activate
 ```
+once activated:
 ```
 pip3 install adafruit-python-shell, ds18b20
 pip3 install --upgrade adafruit-python-shell
