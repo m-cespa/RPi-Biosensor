@@ -1,4 +1,11 @@
 # Python Package Installation:
+
+```
+pip3 install --upgrade adafruit-python-shell
+wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+sudo -E env PATH=$PATH python3 raspi-blinka.py
+```
+
 ```
 pip3 install adafruit-python-shell, adafruit-circuitpython-tca9548a, adafruit-circuitpython-bme280, ds18b20
 pip3 install --upgrade adafruit-python-shell
