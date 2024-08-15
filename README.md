@@ -19,7 +19,7 @@ pip3 install --upgrade adafruit-python-shell
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
 sudo -E env PATH=$PATH python3 raspi-blinka.py
 ```
-(system will now ask to reboot)
+system will now ask to reboot, after reboot:
 ```
 pip3 install adafruit-circuitpython-ads1x15 adafruit-circuitpython-ads7830 adafruit-circuitpython-tca9548a adafruit-circuitpython-bme280
 ```
