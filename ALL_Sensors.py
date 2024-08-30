@@ -10,11 +10,10 @@ import adafruit_tca9548a
 import RPi.GPIO as IO
 import numpy as np
 from tqdm import tqdm
+from ledIO import LED_IO
 
-# Setup GPIO
-IO.setmode(IO.BCM)  # Set the GPIO mode to BOARD numbering
-LED_Pin = 24  # Define the pin number for the LED
-IO.setup(LED_Pin, IO.OUT)  # Set the LED_Pin as an output pin
+# Setup the LEDs
+leds = LED_IO('bcm', 38)
 
 # MULTIPLEXER INITIALISATION
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -29,7 +28,6 @@ AnalogIn(adc_1,ADS_1.P2),AnalogIn(adc_1,ADS_1.P3)]
 
 # ADS7830 INITIALISATION
 # deflected and reference beam readings
-
 adc_2 = ADS_2.ADS7830(i2c)
 REF = 4.2
 
@@ -63,38 +61,51 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
     # this sets the time-scale at regular integer stesps
         current = time.time()
         elapsed = current - start
+        
         if elapsed > (duration+1):
             print('Data recordng complete. Terminating...')
             pbar.update(duration - pbar.n)
-            IO.cleanup()
+            leds.finish()
             break
         else:
             pbar.update(elapsed - pbar.n)
-        # turn on IR LEDs - sleep(2) to let signal settle
-            IO.output(LED_Pin, 1)
-            start_loop = time.time()
-            time.sleep(2)
             
+        # turn on IR LEDs - sleep(1) to let signal settle
+            leds.on()
+            start_loop = time.time()
+            time.sleep(1)
+        
+        # take DS18B20 readings first, reading temperature from 1-wire source file is the slowest operation
             out_temps = []
             for sensor in out_temp_sensors:
                 out_temps.append(sensor.get_temperature())
-        # take other readings after DS18B20 - slowest method bottlenecks
+                
+        # BME readings
             T_s = [bme.temperature for bme in bmes]
             P_s = [bme.pressure for bme in bmes]
             H_s = [bme.humidity for bme in bmes]
             TPH = T_s + P_s + H_s
+            
+        # voltage readings from ADCs
+        # 8-channel ADC reads the raw 16-bit number, divide this by 2**8 and multiply by reference voltage (REF)
             voltages_1 = [ch.voltage for ch in channels_1]
             voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
             
-            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},
+    {",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
             end_loop = time.time()
+            
         # turn off IR LEDs
-            IO.output(LED_Pin, 0)
+            leds.off()
+        
+        # calculates correct pausing time
             diff = end_loop - start_loop
             dt = max(np.ceil(diff),diff) - diff
             pausing = dt + diff
             out_file.write(line + '\n')
-        # sets interval between measurements to 30s
-            time.sleep(10 - pausing + dt)
+            
+        # sets interval between measurements
+            interval = 15
+            time.sleep(interval - pausing + dt)
     pbar.close()
 out_file.close()
