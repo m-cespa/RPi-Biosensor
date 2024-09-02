@@ -13,7 +13,8 @@ from tqdm import tqdm
 from ledIO import LED_IO
 
 # Setup the LEDs
-leds = LED_IO('bcm', 38)
+# choosing BCM mode - other imported packages utilise it
+leds = LED_IO('bcm', 37)
 
 # MULTIPLEXER INITIALISATION
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -31,19 +32,19 @@ AnalogIn(adc_1,ADS_1.P2),AnalogIn(adc_1,ADS_1.P3)]
 adc_2 = ADS_2.ADS7830(i2c)
 REF = 4.2
 
-channels_2 = [adc_2.read(i) for i in range(8)]
-
 # BME280 INITIALISATION
 bme_count = 4
 bmes = [adafruit_bme280.Adafruit_BME280_I2C(mux[i], 0x76) for i in range(bme_count)]
 
 # DS18B20 INITILISATION
-out_temp_sensors = DS18B20.get_all_sensors()
+order = [2, 0, 3, 1]
+out_temp_sensors = np.array(DS18B20.get_all_sensors())
+out_temp_sensors = out_temp_sensors[order]
 
 # Script start...
-duration = 30
+duration = 172800
 
-out_file = open('data.txt','w')
+out_file = open('bacteria_30_08.txt','w')
 string = """t(s) T1_ext T2_ext T3_ext T4_ext 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_180 Turb2_180 Turb3_180 Turb4_180
@@ -89,10 +90,12 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
         # voltage readings from ADCs
         # 8-channel ADC reads the raw 16-bit number, divide this by 2**8 and multiply by reference voltage (REF)
             voltages_1 = [ch.voltage for ch in channels_1]
+            
+            channels_2 = [adc_2.read(i) for i in range(8)]
             voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
             
             line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},
-    {",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+            {",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
             end_loop = time.time()
             
         # turn off IR LEDs
@@ -105,7 +108,7 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             out_file.write(line + '\n')
             
         # sets interval between measurements
-            interval = 15
+            interval = 30
             time.sleep(interval - pausing + dt)
     pbar.close()
 out_file.close()

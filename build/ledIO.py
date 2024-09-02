@@ -35,6 +35,6 @@ class LED_IO:
         IO.output(self.pin, 0)
         IO.cleanup()
         
-led = LED_IO('bcm', 38)
-led.top_hat(10)
-led.finish()
+# led = LED_IO('bcm', 37)
+# led.top_hat(10)
+# led.finish()

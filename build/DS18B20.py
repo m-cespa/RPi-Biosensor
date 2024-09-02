@@ -1,12 +1,18 @@
 from ds18b20 import DS18B20
 import time
+import numpy as np
 
+order = [2, 0, 3, 1]
 sensors = DS18B20.get_all_sensors()
+sensors = np.array(sensors)
+sensors = sensors[order]
 
-start = time.time()
-for sensor in sensors:
-	print(f'Sensor has temperature {(sensor.get_id(), sensor.get_temperature())}')
+while True:
+	out_temps = []
+	for sensor in sensors:
+		out_temps.append(sensor.get_temperature())
+	# ~ out_temps = np.array(out_temps)
+	# ~ out_temps = out_temps[order]
 
-end = time.time()
-diff = end - start
-print(f'\n {diff}')
+	print(out_temps)
+	

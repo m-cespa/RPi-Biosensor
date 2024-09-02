@@ -17,7 +17,7 @@ AnalogIn(adc1,ADS.P2),AnalogIn(adc1,ADS.P3)]
 adc = ADC.ADS7830(i2c)
 REF = 4.2
 
-while True:
+while True: 
 	v_s1 = []
 	for ele in channels:
 		v = round(ele.voltage,3)

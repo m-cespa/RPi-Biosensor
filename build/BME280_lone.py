@@ -20,3 +20,4 @@ while True:
 		H_s = [bme.humidity for bme in bmes]
 		TPH = T_s + P_s + H_s
 		print(TPH)
+		time.sleep(1)
