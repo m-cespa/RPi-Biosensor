@@ -45,12 +45,12 @@ out_temp_sensors = DS18B20.get_all_sensors()
 # Script start...
 duration = 60
 
-out_file = open('4_test2.txt','w')
-string = """t(s) T1_ext T2_ext T3_ext T4_ext 
+out_file = open('data/test.txt','w')
+string = """t(s) T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
-Turb1_180 Turb2_180 Turb3_180 Turb4_180
-Turb1_90 Turb2_90 Turb3_90 Turb4_90
-Turb1_ref Turb2_ref Turb3_ref Turb4_ref"""
+Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
+Turb1_{135} Turb2_{135} Turb3_{135} Turb4_{135}
+Turb1_{ref} Turb2_{ref} Turb3_{ref} Turb4_{ref}"""
 split = string.split()
 title = ','.join(split)
 out_file.write(title + '\n')
