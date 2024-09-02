@@ -44,7 +44,7 @@ out_temp_sensors = out_temp_sensors[order]
 # Script start...
 duration = 172800
 
-out_file = open('bacteria_30_08.txt','w')
+out_file = open('data/bacteria_30_08.txt','w')
 string = """t(s) T1_ext T2_ext T3_ext T4_ext 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_180 Turb2_180 Turb3_180 Turb4_180
