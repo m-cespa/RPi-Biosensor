@@ -45,11 +45,11 @@ out_temp_sensors = out_temp_sensors[order]
 duration = 172800
 
 out_file = open('data/bacteria_30_08.txt','w')
-string = """t(s) T1_ext T2_ext T3_ext T4_ext 
+string = """t(s) T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
-Turb1_180 Turb2_180 Turb3_180 Turb4_180
-Turb1_90 Turb2_90 Turb3_90 Turb4_90
-Turb1_ref Turb2_ref Turb3_ref Turb4_ref"""
+Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
+Turb1_{135} Turb2_{135} Turb3_{135} Turb4_{135}
+Turb1_{ref} Turb2_{ref} Turb3_{ref} Turb4_{ref}"""
 split = string.split()
 title = ','.join(split)
 out_file.write(title + '\n')
@@ -94,8 +94,7 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             channels_2 = [adc_2.read(i) for i in range(8)]
             voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
             
-            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},
-            {",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
             end_loop = time.time()
             
         # turn off IR LEDs
