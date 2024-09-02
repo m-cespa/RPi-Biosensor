@@ -30,7 +30,7 @@ python3 -m pip install --upgrade --force-reinstall adafruit-blinka
 
 # Method: (for RPI Model 3B+)
 
-(for circuit information refer to schematic diagram [here](./docs/labelled_schematic.png))
+(for circuit information refer to schematic diagram [here](./docs/schematic_labelled.png))
 
 **PCA9546** (4 Channel Multiplexer):\
 The multiplexer was used to connect 4 BME280's onto 1 rpi. The multiplexer's package `adafruit-circuitpython-tca9548a` was installed to initialise multiple same address i2c device access [2](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/circuitpython-python). The `mux` object seen in the script allowes accesss to the devices connected to each of the multiplexer's 4 channels by specifying the device's multiplexer channel connection (index of the mux object) and i2c address. The PCA9546's specifications can be found here [3](https://www.adafruit.com/product/5663).
