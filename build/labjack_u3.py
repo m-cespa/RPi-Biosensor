@@ -18,7 +18,7 @@ lines = [ax.plot([], [], label=f'Sensor {i+1}')[0] for i,_ in enumerate(inputs)]
 ax.set_xlabel('Time (s)')
 # ax.set_ylabel('Temperature (°C)')
 ax.set_title('Real-time Temperature Data')
-ax.legend(loc=2)
+ax.legend(loc=3,fontsize=8,bbox_to_anchor=(0.2, 0.2))
 
 # Function to update the plot
 def update_plot():
@@ -37,18 +37,18 @@ while True:
 	ainValues = [d.getAIN(sens) for sens in inputs]
 	temperature = [(((d.getAIN(sens)-0.4)/11+0.605)*100-32)*(5/9) for sens in inputs]
 	current = time.time()
-	elapsed = current - start
+	elapsed = (current - start)/3600
 	times.append(elapsed)
 	for i, temp in enumerate(temperature):
 		outputs[i].append(temp)
 	# for i, voltage in enumerate(ainValues):
 		# outputs[i].append(voltage)
 	
-	# Keep only the last max_points
-	if len(times) > max_points:
-		times = times[-max_points:]
-		for i in range(len(inputs)):
-			outputs[i] = outputs[i][-max_points:]
+	# # Keep only the last max_points
+	# if len(times) > max_points:
+		# times = times[-max_points:]
+		# for i in range(len(inputs)):
+			# outputs[i] = outputs[i][-max_points:]
 	# Update the plot
 	update_plot()
 	time.sleep(1)
