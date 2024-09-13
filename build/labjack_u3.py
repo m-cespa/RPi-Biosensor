@@ -15,7 +15,7 @@ outputs = [[] for _ in range(len(inputs))]
 plt.ion()  # Turn on interactive mode
 fig, ax = plt.subplots(figsize=(10, 6))
 lines = [ax.plot([], [], label=f'Sensor {i+1}')[0] for i,_ in enumerate(inputs)]
-ax.set_xlabel('Time (s)')
+ax.set_xlabel('Time (h)')
 # ax.set_ylabel('Temperature (°C)')
 ax.set_title('Real-time Temperature Data')
 ax.legend(loc=3,fontsize=8,bbox_to_anchor=(0.2, 0.2))
