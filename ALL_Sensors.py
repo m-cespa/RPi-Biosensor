@@ -11,6 +11,7 @@ import RPi.GPIO as IO
 import numpy as np
 from tqdm import tqdm
 from ledIO import LED_IO
+import adafruit_pct2075
 
 # Setup the LEDs
 # choosing BCM mode - other imported packages utilise it
@@ -19,6 +20,10 @@ leds = LED_IO('bcm', 37)
 # MULTIPLEXER INITIALISATION
 i2c = busio.I2C(board.SCL, board.SDA)
 mux = adafruit_tca9548a.PCA9546A(i2c)
+
+# init external temp sensor
+pct = adafruit_pct2075.PCT2075(i2c)
+print("Temperature: %.2f C"%pct.temperature)
 
 # ADS1115 INITIALISATION
 # through beam readings
@@ -42,10 +47,11 @@ out_temp_sensors = np.array(DS18B20.get_all_sensors())
 out_temp_sensors = out_temp_sensors[order]
 
 # Script start...
-duration = 172800
+# duration = 172800
+duration = 150
 
-out_file = open('data/bacteria_30_08.txt','w')
-string = """t(s) T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
+out_file = open('data/test.txt','w')
+string = """t(s) T_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
 Turb1_{135} Turb2_{135} Turb3_{135} Turb4_{135}
@@ -78,6 +84,7 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
         
         # take DS18B20 readings first, reading temperature from 1-wire source file is the slowest operation
             out_temps = []
+            out_temps.append(pct.temperature)
             for sensor in out_temp_sensors:
                 out_temps.append(sensor.get_temperature())
                 
