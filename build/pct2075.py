@@ -20,7 +20,7 @@ ax.set_xlabel('Time (h)')
 # ax.set_ylabel('Temperature (°C)')
 ax.set_title('Real-time Temperature Data')
 ax.legend(loc=3,fontsize=8,bbox_to_anchor=(0.2, 0.2))
-
+out_file = open('data/external.txt','w')
 
 def update_plot():
     for i, line in enumerate(lines):
