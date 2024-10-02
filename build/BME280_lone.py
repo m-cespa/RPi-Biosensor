@@ -15,9 +15,9 @@ bme_count = 4
 bmes = [adafruit_bme280.Adafruit_BME280_I2C(mux[i], 0x76) for i in range(bme_count)]
 
 while True:
-		T_s = [bme.temperature for bme in bmes]
-		P_s = [bme.pressure for bme in bmes]
-		H_s = [bme.humidity for bme in bmes]
+		T_s = [round(bme.temperature,3) for bme in bmes]
+		P_s = [round(bme.pressure,3) for bme in bmes]
+		H_s = [round(bme.humidity,3) for bme in bmes]
 		TPH = T_s + P_s + H_s
 		print(TPH)
 		time.sleep(1)
