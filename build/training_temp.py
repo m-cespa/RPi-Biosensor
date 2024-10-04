@@ -23,7 +23,7 @@ d = u3.U3()
 i2c_bus = board.I2C()
 ina219 = INA219(i2c_bus)
 
-out_file = open('data/temperature_training.txt', 'w')
+out_file = open('data/temperature_training_1.txt', 'w')
 title = ['current', 'tube_out', 'tube_in', 'flask_1', 'flask_2']
 out_file.write(','.join(title) + '\n')
 
@@ -31,13 +31,25 @@ initialize_gpio()
 peltier = PWM_Motor(24, 25, 1000)
 def peltier_modulation():
 	peltier.run(100, forward=True)
-	time.sleep(20)
+	time.sleep(1800)
 	peltier.stop()
-	time.sleep(20)
+	time.sleep(1800)
 	peltier.run(100, forward=False)
-	time.sleep(20)
+	time.sleep(1800)
+	peltier.stop()
+	time.sleep(1800)
+	peltier.run(100, forward=True)
+	time.sleep(1800)
+	peltier.run(100, forward=False)
+	time.sleep(1800)
+	peltier.stop()
+	time.sleep(1800)
+	peltier.run(100, forward=False)
+	time.sleep(1800)
+	peltier.run(100, forward=True)
+	time.sleep(1800)
 	
-duration = 65
+duration = 18000
 start = time.time()
 heating_thread = threading.Thread(target=peltier_modulation)
 heating_thread.start()
@@ -65,7 +77,7 @@ while current_time - start < duration:
 	out_file.write(line + '\n')
 	
 	# sets interval between measurements
-	interval = 3
+	interval = 10
 	time.sleep(interval - pausing + dt)
 	
 	current_time = time.time()
