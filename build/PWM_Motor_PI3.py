@@ -1,9 +1,10 @@
+# File: pwm_motor.py
+
 import RPi.GPIO as GPIO
 import time
 
 class PWM_Motor:
     def __init__(self, pwm_pin: int, dir_pin: int, freq: int):
-        GPIO.setmode(GPIO.BCM)
         self.pwm_pin = pwm_pin
         self.dir_pin = dir_pin
         self.freq = freq
@@ -41,14 +42,22 @@ class PWM_Motor:
         
     def cleanup(self):
         self.pwm.stop()
-        GPIO.cleanup()
+
+def initialize_gpio():
+    GPIO.setmode(GPIO.BCM)
+    # Add any other global GPIO setup here if needed
+
+def cleanup_gpio():
+    GPIO.cleanup()
 
 # Example usage
 if __name__ == "__main__":
     try:
+        initialize_gpio()
         peltier = PWM_Motor(24, 25, 100)
         peltier.run(50, forward=True)  # Run at 50% power, forward direction
         time.sleep(5)  # Run for 5 seconds
         peltier.stop()
     finally:
         peltier.cleanup()
+        cleanup_gpio()
