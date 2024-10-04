@@ -3,12 +3,14 @@ import time
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-inputs = [0, 1, 2]
+inputs = [0, 1, 2, 3]
+gain = [3.15,3.15,1,1] 
 d = u3.U3()
 
 # Prepare data storage for plotting
 max_points = 200  # Maximum number of points to display on the plot
 times = []
+temperature = [[] for _ in range(len(inputs))]
 outputs = [[] for _ in range(len(inputs))]  
 
 # Set up the plot
@@ -35,7 +37,8 @@ def update_plot():
 start = time.time()
 while True:
 	ainValues = [d.getAIN(sens) for sens in inputs]
-	temperature = [(((d.getAIN(sens)-0.4)/11+0.605)*100-32)*(5/9) for sens in inputs]
+	for i, sens in enumerate(inputs):
+		temperature[i] = (((d.getAIN(sens))/gain[i])*100-32)*(5/9)
 	current = time.time()
 	elapsed = (current - start)/3600
 	times.append(elapsed)
