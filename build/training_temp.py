@@ -59,28 +59,32 @@ while current_time - start < duration:
 	
 	start_loop = time.time()
 	# current by default in mA
-	current = ina219.current / 1000
+	try:
+		current = ina219.current / 1000
 	
-	# 4 temperature readings
-	temperature = []
-	ainValues = [d.getAIN(sens) for sens in inputs]
-	for i, sens in enumerate(inputs):
-		temperature.append((((d.getAIN(sens))/gain[i])*100-32)*(5/9))
+		# 4 temperature readings
+		temperature = []
+		ainValues = [d.getAIN(sens) for sens in inputs]
+		for i, sens in enumerate(inputs):
+			temperature.append((((d.getAIN(sens))/gain[i])*100-32)*(5/9))
 
-	line = f'{current},{",".join(map(str,temperature))}'
-	end_loop = time.time()
-	
-	# calculates correct pausing time
-	diff = end_loop - start_loop
-	dt = max(np.ceil(diff),diff) - diff
-	pausing = dt + diff
-	out_file.write(line + '\n')
-	
-	# sets interval between measurements
-	interval = 10
-	time.sleep(interval - pausing + dt)
-	
-	current_time = time.time()
+		line = f'{current},{",".join(map(str,temperature))}'
+	except:
+		line = ",".join(['NaN']*5)
+	finally:
+		end_loop = time.time()
+		
+		# calculates correct pausing time
+		diff = end_loop - start_loop
+		dt = max(np.ceil(diff),diff) - diff
+		pausing = dt + diff
+		out_file.write(line + '\n')
+		
+		# sets interval between measurements
+		interval = 10
+		time.sleep(interval - pausing + dt)
+		
+		current_time = time.time()
 
 print(current_time-start)
 out_file.close()
