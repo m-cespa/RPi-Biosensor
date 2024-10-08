@@ -112,50 +112,55 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             break
         else:
             pbar.update(elapsed - pbar.n)
+            try:
         # turn on IR LEDs - sleep(2) to let signal settle
-            IO.output(LED_Pin, 1)
-            start_loop = time.time()
-            time.sleep(2)
-            
-            out_temps = []
-            for sensor in out_temp_sensors:
-                out_temps.append(sensor.get_temperature())
-        # take other readings after DS18B20 - slowest method bottlenecks
-            T_s = [bme.temperature for bme in bmes]
-            P_s = [bme.pressure for bme in bmes]
-            H_s = [bme.humidity for bme in bmes]
-            TPH = T_s + P_s + H_s
-            voltages_1 = [ch.voltage for ch in channels_1]
-            
-            channels_2 = [adc_2.read(i) for i in range(8)]
-            voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
-            
-            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
-            end_loop = time.time()
+                IO.output(LED_Pin, 1)
+                start_loop = time.time()
+                time.sleep(2)
+                
+                out_temps = []
+                for sensor in out_temp_sensors:
+                    out_temps.append(sensor.get_temperature())
+            # take other readings after DS18B20 - slowest method bottlenecks
+                T_s = [bme.temperature for bme in bmes]
+                P_s = [bme.pressure for bme in bmes]
+                H_s = [bme.humidity for bme in bmes]
+                TPH = T_s + P_s + H_s
+                voltages_1 = [ch.voltage for ch in channels_1]
+                
+                channels_2 = [adc_2.read(i) for i in range(8)]
+                voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
+                
+                line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+                end_loop = time.time()
+            except:
+                line = ",".join(['NaN']*29)
+                end_loop = time.time()
         # turn off IR LEDs
-            IO.output(LED_Pin, 0)
-            diff = end_loop - start_loop
-            dt = max(np.ceil(diff),diff) - diff
-            pausing = dt + diff
-            out_file.write(line + '\n')
-        # Update plot data
-            times.append(elapsed)
-            for i, temp in enumerate(T_s):
-                temperatures[i].append(temp)
-            for i, turb in enumerate(voltages_1):
-                turbidities[i].append(turb)
-            
-        # Keep only the last max_points
-            if len(times) > max_points:
-                times = times[-max_points:]
-                for i in range(4):
-                    temperatures[i] = temperatures[i][-max_points:]
-                    turbidities[i] = turbidities[i][-max_points:]
-            
-        # Update the plot
-            update_plot()
-            
-        # sets interval between measurements to 30s
-            time.sleep(10 - pausing + dt)
-    pbar.close()
+            finally:
+                IO.output(LED_Pin, 0)
+                diff = end_loop - start_loop
+                dt = max(np.ceil(diff),diff) - diff
+                pausing = dt + diff
+                out_file.write(line + '\n')
+            # Update plot data
+                times.append(elapsed)
+                for i, temp in enumerate(T_s):
+                    temperatures[i].append(temp)
+                for i, turb in enumerate(voltages_1):
+                    turbidities[i].append(turb)
+                
+            # Keep only the last max_points
+                if len(times) > max_points:
+                    times = times[-max_points:]
+                    for i in range(4):
+                        temperatures[i] = temperatures[i][-max_points:]
+                        turbidities[i] = turbidities[i][-max_points:]
+                
+            # Update the plot
+                update_plot()
+                
+            # sets interval between measurements to 30s
+                time.sleep(10 - pausing + dt)
+        pbar.close()
 out_file.close()
