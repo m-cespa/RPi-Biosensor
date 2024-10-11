@@ -30,23 +30,45 @@ out_file.write(','.join(title) + '\n')
 initialize_gpio()
 peltier = PWM_Motor(24, 25, 1000)
 def peltier_modulation():
-	peltier.run(100, forward=True)
+	for i in range(180):
+		# 900s run, current step decrease (100 to 10)
+		peltier.run(100 - i // 2, forward=True)
+		time.sleep(5)
+	for i in range(180):
+		# 900s run, current step decrease (10 to 100)
+		peltier.run(100 - i // 2, forward=False)
+		time.sleep(5)
+		
 	time.sleep(1800)
-	peltier.stop()
+	
+	for i in range(180):
+		# 1800s run, current step increase (10 to 100)
+		peltier.run(10 + i // 2, forward=True)
+		time.sleep(10)
+	for i in range(180):
+		# 1800s run, current step increase (10 to 100)
+		peltier.run(10 + i // 2, forward=False)
+		time.sleep(10)
+		
 	time.sleep(1800)
-	peltier.run(100, forward=False)
-	time.sleep(1800)
-	peltier.stop()
-	time.sleep(1800)
-	peltier.run(100, forward=True)
-	time.sleep(1800)
-	peltier.run(100, forward=False)
-	time.sleep(1800)
-	peltier.stop()
-	time.sleep(1800)
-	peltier.run(100, forward=False)
-	time.sleep(1800)
-	peltier.run(100, forward=True)
+	
+	for i in range(180):
+		# 1800s run, constant forward current
+		peltier.run(50, forward=True)
+		time.sleep(10)
+	for i in range(180):
+		# 1800s run, constant reverse current
+		peltier.run(50, forward=False)
+		time.sleep(10)
+	for i in range(360):
+		# 1800s run, constant forward current
+		peltier.run(20, forward=True)
+		time.sleep(5)
+	for i in range(360):
+		# 1800s run, constant reverse current
+		peltier.run(20, forward=False)
+		time.sleep(5)
+		
 	time.sleep(1800)
 	
 duration = 18000
