@@ -50,7 +50,7 @@ out_temp_sensors = out_temp_sensors[order]
 duration = 172800
 # duration = 150
 
-out_file = open('data/air_241004.txt','w')
+out_file = open('data/water_241009.txt','w')
 string = """t(s) T_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
@@ -81,40 +81,39 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             leds.on()
             start_loop = time.time()
             time.sleep(1)
-        
+            try:
         # take DS18B20 readings first, reading temperature from 1-wire source file is the slowest operation
-            out_temps = []
-            out_temps.append(pct.temperature)
-            for sensor in out_temp_sensors:
-                out_temps.append(sensor.get_temperature())
+                out_temps = []
+                out_temps.append(pct.temperature)
+                for sensor in out_temp_sensors:
+                    out_temps.append(sensor.get_temperature())
+            # BME readings
+                T_s = [bme.temperature for bme in bmes]
+                P_s = [bme.pressure for bme in bmes]
+                H_s = [bme.humidity for bme in bmes]
+                TPH = T_s + P_s + H_s
+            # voltage readings from ADCs
+            # 8-channel ADC reads the raw 16-bit number, divide this by 2**8 and multiply by reference voltage (REF)
+                voltages_1 = [ch.voltage for ch in channels_1]
+                channels_2 = [adc_2.read(i) for i in range(8)]
+                voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
+                line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+            except:
+                line = f"""{round(elapsed,3)},{",".join(['NaN']*28)}"""
+            finally:
+                end_loop = time.time()
                 
-        # BME readings
-            T_s = [bme.temperature for bme in bmes]
-            P_s = [bme.pressure for bme in bmes]
-            H_s = [bme.humidity for bme in bmes]
-            TPH = T_s + P_s + H_s
+            # turn off IR LEDs
+                leds.off()
             
-        # voltage readings from ADCs
-        # 8-channel ADC reads the raw 16-bit number, divide this by 2**8 and multiply by reference voltage (REF)
-            voltages_1 = [ch.voltage for ch in channels_1]
-            
-            channels_2 = [adc_2.read(i) for i in range(8)]
-            voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
-            
-            line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
-            end_loop = time.time()
-            
-        # turn off IR LEDs
-            leds.off()
-        
-        # calculates correct pausing time
-            diff = end_loop - start_loop
-            dt = max(np.ceil(diff),diff) - diff
-            pausing = dt + diff
-            out_file.write(line + '\n')
-            
-        # sets interval between measurements
-            interval = 30
-            time.sleep(interval - pausing + dt)
+            # calculates correct pausing time
+                diff = end_loop - start_loop
+                dt = max(np.ceil(diff),diff) - diff
+                pausing = dt + diff
+                out_file.write(line + '\n')
+                
+            # sets interval between measurements
+                interval = 30
+                time.sleep(interval - pausing + dt)
     pbar.close()
 out_file.close()
