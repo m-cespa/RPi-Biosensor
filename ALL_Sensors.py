@@ -50,8 +50,8 @@ out_temp_sensors = out_temp_sensors[order]
 duration = 172800
 # duration = 150
 
-out_file = open('data/water_241011.txt','w')
-string = """t(s) T_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
+out_file = open('data/pressure_test.txt','w')
+string = """time t(s) T_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
 Turb1_{135} Turb2_{135} Turb3_{135} Turb4_{135}
@@ -97,7 +97,7 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
                 voltages_1 = [ch.voltage for ch in channels_1]
                 channels_2 = [adc_2.read(i) for i in range(8)]
                 voltages_2 = [((ch / 65535.0) * REF) for ch in channels_2]
-                line = f"""{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
+                line = f"""{current},{round(elapsed,3)},{",".join(map(str,out_temps))},{",".join(map(str,TPH))},{",".join(map(str,voltages_1))},{",".join(map(str,voltages_2))}"""
             except:
                 line = f"""{round(elapsed,3)},{",".join(['NaN']*28)}"""
             finally:
