@@ -22,8 +22,8 @@ i2c = busio.I2C(board.SCL, board.SDA)
 mux = adafruit_tca9548a.PCA9546A(i2c)
 
 # init external temp sensor
-pct = adafruit_pct2075.PCT2075(i2c)
-print("Temperature: %.2f C"%pct.temperature)
+#pct = adafruit_pct2075.PCT2075(i2c)
+#print("Temperature: %.2f C"%pct.temperature)
 
 # ADS1115 INITIALISATION
 # through beam readings
@@ -40,6 +40,8 @@ REF = 4.2
 # BME280 INITIALISATION
 bme_count = 4
 bmes = [adafruit_bme280.Adafruit_BME280_I2C(mux[i], 0x76) for i in range(bme_count)]
+bme_ext = adafruit_bme280.Adafruit_BME280_I2C(i2c,0x77)
+print("Temperature: %.2f C"%bme_ext.temperature)
 
 # DS18B20 INITILISATION
 order = [2, 0, 3, 1]
@@ -47,11 +49,11 @@ out_temp_sensors = np.array(DS18B20.get_all_sensors())
 out_temp_sensors = out_temp_sensors[order]
 
 # Script start...
-duration = 172800
+duration = 300
 # duration = 150
 
-out_file = open('data/pressure_test.txt','w')
-string = """time t(s) T_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
+out_file = open('data/extP_short_test.txt','w')
+string = """time t(s) T_{env} P_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
 Turb1_{135} Turb2_{135} Turb3_{135} Turb4_{135}
@@ -84,7 +86,8 @@ with tqdm(total=duration, desc="Processing: ") as pbar:
             try:
         # take DS18B20 readings first, reading temperature from 1-wire source file is the slowest operation
                 out_temps = []
-                out_temps.append(pct.temperature)
+                out_temps.append(bme_ext.temperature)
+                out_temps.append(bme_ext.pressure)
                 for sensor in out_temp_sensors:
                     out_temps.append(sensor.get_temperature())
             # BME readings
