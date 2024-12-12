@@ -49,10 +49,10 @@ out_temp_sensors = np.array(DS18B20.get_all_sensors())
 out_temp_sensors = out_temp_sensors[order]
  
 # Script start...
-duration = 64800
+duration = 259200
 # duration = 150
 
-out_file = open('data/pressure_2_amodo_parafilm.txt','w')
+out_file = open('data/yeast_w303_0.1xypd.txt','w')
 string = """time t(s) T_{env} P_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
