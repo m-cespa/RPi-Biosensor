@@ -12,6 +12,8 @@ import numpy as np
 from tqdm import tqdm
 from ledIO import LED_IO
 import adafruit_pct2075
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 # Setup the LEDs
 # choosing BCM mode - other imported packages utilise it
@@ -49,10 +51,11 @@ out_temp_sensors = np.array(DS18B20.get_all_sensors())
 out_temp_sensors = out_temp_sensors[order]
  
 # Script start...
-duration = 259200
+# duration = 259200
 # duration = 150
+duration = 86400
 
-out_file = open('data/yeast_w303_0.1xypd.txt','w')
+out_file = open('data/amodo_2-4_test.txt','w')
 string = """time t(s) T_{env} P_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
@@ -62,7 +65,38 @@ split = string.split()
 title = ','.join(split)
 out_file.write(title + '\n')
 
-with tqdm(total=duration, desc="Proces-sing: ") as pbar:
+
+# Prepare data storage for plotting
+times = []
+# create empty lists to store lists of points to plot against time
+vials = [[] for _ in range(5)]
+
+# Set up the plot
+plt.ion()  # Turn on interactive mode
+fig, ax1 = plt.subplots(figsize=(10, 6))
+live_vials = [ax1.plot([], [], label=f'Vial {i+1}')[0] for i in range(5)]
+
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Pressure (Vials) (mBar)')
+ax1.tick_params(axis='y', labelcolor='r')
+
+ax1.tick_params(axis='y', labelcolor='b')
+
+plt.title('Real-time Pressure Data')
+ax1.legend(loc='upper left')
+
+# Function to update the plot
+def update_plot():
+    for i, line in enumerate(live_vials):
+        line.set_data(times, vials[i])
+    
+    ax1.relim()
+    ax1.autoscale_view()
+    
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+
+with tqdm(total=duration, desc="Processing: ") as pbar:
     start = time.time()
     
     while True:
@@ -106,8 +140,17 @@ with tqdm(total=duration, desc="Proces-sing: ") as pbar:
             finally:
                 end_loop = time.time()
                 
-            # turn off IR LEDs
+                # turn off IR LEDs
                 leds.off()
+                
+                # Update plot data
+                times.append(elapsed)
+                for i, pressure in enumerate(P_s):
+                    vials[i].append(pressure)
+                vials[4].append(bme_ext.pressure)
+            
+            # Update the plot
+                update_plot()
             
             # calculates correct pausing time
                 diff = end_loop - start_loop

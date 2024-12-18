@@ -5,9 +5,11 @@ import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 import adafruit_ads7830.ads7830 as ADC
 import RPi.GPIO as IO
+from ledIO import LED_IO
 
 # ADS1115 INITIALISATION
 i2c = busio.I2C(board.SCL, board.SDA)
+leds = LED_IO('bcm', 37)
 
 adc1 = ADS.ADS1115(address=0x49, i2c=i2c)
 
@@ -16,8 +18,9 @@ AnalogIn(adc1,ADS.P2),AnalogIn(adc1,ADS.P3)]
 
 adc = ADC.ADS7830(i2c)
 REF = 4.2
+leds.on()
 
-while True: 
+while True: 	
 	v_s1 = []
 	for ele in channels:
 		v = round(ele.voltage,3)
@@ -28,3 +31,4 @@ while True:
 	print(v_s2)
 	time.sleep(2)
 
+leds.off()
