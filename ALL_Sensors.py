@@ -51,11 +51,11 @@ out_temp_sensors = np.array(DS18B20.get_all_sensors())
 out_temp_sensors = out_temp_sensors[order]
  
 # Script start...
-# duration = 259200
+duration = 259200
 # duration = 150
-duration = 86400
+# duration = 86400
 
-out_file = open('data/amodo_2-4_test.txt','w')
+out_file = open('data/241218_amodo_2-4_test.txt','w')
 string = """time t(s) T_{env} P_{env} T1_{ext} T2_{ext} T3_{ext} T4_{ext} 
 T1 T2 T3 T4 P1 P2 P3 P4 H1 H2 H3 H4
 Turb1_{180} Turb2_{180} Turb3_{180} Turb4_{180}
